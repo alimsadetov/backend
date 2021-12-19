@@ -4,7 +4,8 @@ const App = {
             notes: [],
             inputName: '',
             inputOpisanie: '',
-            inputUsername: ''
+            inputUsername: '',
+            inputEmail: ''
         }
     },
     methods: {
@@ -57,6 +58,15 @@ const App = {
                 
             }
         },
+
+        onEmail () {
+            if (this.isUsernameAndEmailNotFilled()){
+                return
+            }
+            else {
+                axios.post(`/email/onemail/${this.inputEmail}/${this.inputUsername}`)
+            }
+        },
         isNotFull() {
             if (this.inputName === '' || this.inputOpisanie === '' || this.inputUsername === ''){
                 //console.log(this.inputName, this.inputOpisanie, this.inputUsername);
@@ -66,6 +76,13 @@ const App = {
         },
         isUsernameNotFilled() {
             if (this.inputUsername === ''){
+                //console.log(this.inputUsername);
+                return true
+            };
+        },
+
+        isUsernameAndEmailNotFilled() {
+            if (this.inputUsername === '' || this.inputEmail === ''){
                 //console.log(this.inputUsername);
                 return true
             };

@@ -53,6 +53,13 @@
 					</form>
 					<button id="button" @click="addTask">Добавить дело</button>
 
+					<form>
+						<h4>Email</h4>
+						<input type="text" id="name-delo" name="" v-model="inputEmail"><p>
+						<h4 v-if="isUsernameAndEmailNotFilled()">Введите имя пользователя и email</h4>
+					</form>
+					<button id="button" @click="onEmail">Отправить список задач на почту</button>
+
 
 
 

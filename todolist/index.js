@@ -3,6 +3,11 @@ const path = require('path');
 const express = require('express');
 const app = express();
 const port = 3000;
+const nodemailer = require('nodemailer')
+
+
+  
+
 
 
 app.use(express.static(path.join(__dirname, 'views')));
@@ -50,16 +55,45 @@ app.get('/get/:username', async (req, res) => {
             return console.log(err);
         }
         console.log("norm");
-        client.db().collection("tasks").find({username: req.params.username}).toArray((err, result) => {
-            console.log(result);
-            tasks = result;
-            res.send(tasks)
-            client.close
-        })
-
+        
     })
 
     
+})
+
+app.post('/email/onemail/:email/:username', (req, res) => {
+    mongoClient.connect("mongodb+srv://alimsadetov:135642@tododb.9pokh.mongodb.net/todolist?retryWrites=true&w=majority", async (err, client) => {
+        if (err){
+            return console.log(err);
+        }
+        console.log("na pochtu");
+        let testEmailAccount = await nodemailer.createTestAccount()
+
+        let transporter = nodemailer.createTransport({
+            host: 'smtp.ethereal.email',
+            port: 587,
+            secure: false,
+            auth: {
+            user: testEmailAccount.user,
+            pass: testEmailAccount.pass,
+            },
+        })
+
+        client.db().collection("tasks").find({username: req.params.username}).toArray(async (err, result) => {
+            console.log(result);
+            await transporter.sendMail({
+                from: '"Node js" <nodejs@example.com>',
+                to: `${req.params.email}`,
+                subject: 'Message from Node js',
+                text: 'This message was sent from Node js server.',
+                html:
+                `This <i>message</i> was sent from <strong>Node js</strong> server. ${result}`,
+            })
+            client.close
+        })
+
+
+    })
 })
 
 
@@ -68,3 +102,5 @@ app.get('/get/:username', async (req, res) => {
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`)
 })
+
+module.exports = app;
